@@ -7,6 +7,7 @@ class AccessibilityEditor:
         self._handlers = {
             "alt_missing": self._handle_alt_missing,
             "heading_empty": self._handle_heading_missing,
+            "title_invalid": self._handle_heading_missing,
             # TODO: Add more!
         }
 
