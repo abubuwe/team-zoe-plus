@@ -1,3 +1,7 @@
+from colorutils import Color
+from lxml import etree
+from html_modifier import get_elem_from_path
+
 from claude import complete
 from prompts import build_heading_prompt
 from captioning import caption_image
@@ -9,9 +13,27 @@ class AccessibilityEditor:
             "alt_missing": self._handle_alt_missing,
             "heading_empty": self._handle_heading_missing,
             "title_invalid": self._handle_heading_missing,
+            "contrast": self._increase_contrast
             # TODO: Add more!
         }
 
+    def _increase_contrast(self, details: dict):
+        xpaths = details["xpaths"]
+        contrast_data = details["contrastdata"]
+        changes_dict = {}
+
+        for xpath, data in zip(xpaths, contrast_data):
+            background_colour = data[2]
+            colour_obj = Color(background_colour)
+            
+            opp_colour = colour_obj.complementary().hex
+            elem = get_elem_from_path(xpath, self._dom)
+            elem.set("style", f"colour: {opp_colour}")
+
+            changes_dict[xpath] = etree.tostring(elem).decode()
+
+        return etree.tostring(self._dom).decode(), changes_dict
+    
     def _handle_alt_missing(self, details: dict):
         # TODO: Get the image somehow
         
