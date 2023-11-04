@@ -1,10 +1,8 @@
-import sys
-import json
 import requests
 
 from tqdm import tqdm
-from html_modifier import html_accessibility
-from flask import Flask, flash, request, redirect, url_for
+from html_modifier import parse_html
+from flask import Flask, request
 
 from errors import ErrorHandler
 from utils import debug_picklify
@@ -15,28 +13,19 @@ from top_secrets import WAVE_API_KEY
 app = Flask(__name__)
 app.debug = True
 
+ACCESSIBILITY_API_URL = "https://alphagov.github.io/accessibility-tool-audit/test-cases.html" 
 HTTP_EMPTY_RESPONSE = 200
-HTTP_BAD_REQUEST = 400
-
-def is_html(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() == "html"
 
 @app.route("/", methods=['GET', 'POST'])
 def get_html():
     if request.method == 'POST':
-        if 'file' not in request.files:
-            print('No file found', file=sys.stderr)
-            return "", HTTP_BAD_REQUEST
-        file = request.files['file']
-        if file.filename == '':
-            print('No selected file', file=sys.stderr)
-            return "", HTTP_BAD_REQUEST
+        url = request.args["url"]
+        html_string = request.args["html_string"]
 
-        if not is_html(file.filename):
-            print("Uploaded file is not a HTML file", file=sys.stderr)
-            return "", HTTP_BAD_REQUEST
+        dom = parse_html(html_string)
+        error_handler = ErrorHandler(dom)
         
-        return html_accessibility(file)
+        return process_analysis(query_accessibility_errors(ACCESSIBILITY_API_URL), error_handler)
     
     return "", HTTP_EMPTY_RESPONSE
 
@@ -82,8 +71,4 @@ def process_analysis(results: dict, error_handler: ErrorHandler):
    # TODO: Handle alerts!
 
 if __name__ == "__main__":
-   url = "https://alphagov.github.io/accessibility-tool-audit/test-cases.html"
-   error_handler = ErrorHandler(None)
-
-   process_analysis(query_accessibility_errors(url), error_handler)
    app.run()
