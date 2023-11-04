@@ -1,6 +1,7 @@
 from colorutils import Color
 from lxml import etree
 from html_modifier import get_elem_from_path
+from colorsys import rgb_to_hsv, hsv_to_rgb
 
 from claude import complete
 from prompts import build_heading_prompt
@@ -17,6 +18,12 @@ class AccessibilityEditor:
             # TODO: Add more!
         }
 
+    @staticmethod
+    def complementary(r, g, b):
+        """returns RGB components of complementary color"""
+        hsv = rgb_to_hsv(r, g, b)
+        return hsv_to_rgb((hsv[0] + 0.5) % 1, hsv[1], hsv[2])
+
     def _increase_contrast(self, details: dict):
         xpaths = details["xpaths"]
         contrast_data = details["contrastdata"]
@@ -26,7 +33,7 @@ class AccessibilityEditor:
             background_colour = data[2]
             colour_obj = Color(background_colour)
             
-            opp_colour = colour_obj.complementary().hex
+            opp_colour = self.complementary(colour_obj.rgb)
             elem = get_elem_from_path(xpath, self._dom)
             elem.set("style", f"colour: {opp_colour}")
 

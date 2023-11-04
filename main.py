@@ -8,7 +8,6 @@ from html_modifier import parse_html
 from flask import Flask, request
 
 from accessibility_editor import AccessibilityEditor
-from contrast_editor import ContrastEditor
 from utils import debug_picklify
 import base64
 from dotenv import load_dotenv
@@ -42,12 +41,10 @@ def get_html():
 
         dom = parse_html(html_string)
         accessibility_editor = AccessibilityEditor(dom)
-        contrast_editor = ContrastEditor(dom)
         
         return process_analysis(
            query_accessibility_errors(ACCESSIBILITY_API_URL), 
-           accessibility_editor, 
-           contrast_editor
+           accessibility_editor
          )
     
     return "", HTTP_EMPTY_RESPONSE
@@ -75,19 +72,19 @@ def query_accessibility_errors(website: str):
 
 def process_analysis(
       results: dict, 
-      accessibility_editor: AccessibilityEditor,
-      contrast_editor: ContrastEditor
+      accessibility_editor: AccessibilityEditor
    ):
    print(f"Visual analysis URL: {results['statistics']['waveurl']}")
    print(f"Total element count: {results['statistics']['totalelements']}")
 
    all_errors = list(chain.from_iterable(
-      results["categories"][cls]["items"]
+      results["categories"][cls]
       for cls in ["error", "alert", "contrast"]
    ))
 
    with tqdm(total = len(all_errors)) as pbar:
-      for error_type, error in all_errors.items():
+      print(all_errors)
+      for error_type, error in all_errors:
          pbar.set_description(f"Patching {error_type}...")
          
          try:
