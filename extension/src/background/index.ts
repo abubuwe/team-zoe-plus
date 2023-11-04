@@ -6,7 +6,12 @@ chrome.runtime.onMessage.addListener((request) => {
   }
 
   if (request.type === 'HTML') {
-    console.log('background has received a message from content, and html is ', request?.html)
+    console.log('background has received a message from content ')
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      // tabs[0] is the selected tab
+      console.log('tabs', tabs)
+      chrome.tabs.sendMessage(tabs[0].id! , {type: "HTML", html: "Hello from background!"});
+    });
   }
 })
 
