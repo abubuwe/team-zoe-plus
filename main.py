@@ -1,6 +1,7 @@
 import os
 import requests
 import os
+from itertools import chain
 
 from tqdm import tqdm
 from html_modifier import parse_html
@@ -80,12 +81,13 @@ def process_analysis(
    print(f"Visual analysis URL: {results['statistics']['waveurl']}")
    print(f"Total element count: {results['statistics']['totalelements']}")
 
-   errors = results['categories']['error']['items']
-   alerts = results['categories']['alert']['items']
-   contrast_errors = results['categories']['contrast']['items']
+   all_errors = list(chain.from_iterable(
+      results["categories"][cls]["items"]
+      for cls in ["error", "alert", "contrast"]
+   ))
 
-   with tqdm(total = len(errors) + len(contrast_errors)) as pbar:
-      for error_type, error in errors.items():
+   with tqdm(total = len(all_errors)) as pbar:
+      for error_type, error in all_errors.items():
          pbar.set_description(f"Patching {error_type}...")
          
          try:
@@ -96,17 +98,6 @@ def process_analysis(
          
          pbar.update()
 
-      for contrast_type, contrast_error in contrast_errors.items():
-         pbar.set_description(f"Fixing contrast {contrast_type}...")
-         
-         try:
-            contrast_editor.handle_contrast_error(contrast_type, contrast_error)
-         except RuntimeError:
-            # TODO: Remove this!
-            pass
-         
-         pbar.update()      
-   
    # TODO: Handle alerts!
 
 if __name__ == "__main__":
