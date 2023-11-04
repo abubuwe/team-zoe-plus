@@ -1,5 +1,6 @@
 from claude import complete
 from prompts import build_heading_prompt
+from captioning import caption_image
 
 class AccessibilityEditor:
     def __init__(self, dom: any):
@@ -11,8 +12,13 @@ class AccessibilityEditor:
         }
 
     def _handle_alt_missing(self, details: dict):
-        # Do something with the DOM to fix the "alt_missing" error
-        pass
+        # TODO: Get the image somehow
+        
+        with open("../strictly.png", "rb") as rf:
+            alt_text = caption_image(rf.read())
+
+        print(f"ALT_TEXT: {alt_text}")
+        # TODO: Add the alt_text to the DOM
 
     def _handle_heading_missing(self, _: dict):
         # TODO: This needs to be a string representation of the DOM
