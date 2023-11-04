@@ -4,4 +4,4 @@ requests==2.31.0
 selenium==4.15.2
 tqdm==4.66.1
 gunicorn>=20.1.0
-```
+python-dotenv>=1.0.0

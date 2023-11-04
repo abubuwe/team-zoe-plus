@@ -1,4 +1,5 @@
 import requests
+import os
 
 from tqdm import tqdm
 from html_modifier import parse_html
@@ -7,8 +8,15 @@ from flask import Flask, request
 from errors import ErrorHandler
 from utils import debug_picklify
 
-#TODO: Add your Wave key to top_secrets.py
-from top_secrets import WAVE_API_KEY
+from dotenv import load_dotenv
+
+load_dotenv()
+
+print(os.environ)
+try:
+   WAVE_API_KEY = os.environ["WAVE_API_KEY"]
+except KeyError:
+   raise KeyError("Please set the WAVE_API_KEY environment variable to your Wave API key.")
 
 app = Flask(__name__)
 app.debug = True
