@@ -6,7 +6,7 @@ class ContrastEditor():
     def __init__(self, dom: any):
         self._dom = dom
         self._handlers = {
-            "contrast": self._handle_contrast_errors
+            "contrast": self._increase_contrast
             # TODO: Find contrast error type
         }
 
