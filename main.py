@@ -7,6 +7,7 @@ from flask import Flask, request
 
 from errors import ErrorHandler
 from utils import debug_picklify
+import base64
 
 from dotenv import load_dotenv
 
@@ -27,8 +28,11 @@ HTTP_EMPTY_RESPONSE = 200
 @app.route("/", methods=['GET', 'POST'])
 def get_html():
     if request.method == 'POST':
-        url = request.args["url"]
-        html_string = request.args["html_string"]
+        content = request.json
+        url = content["url"]
+        html_string = content["html_string"]
+        image_arr = content["images"]
+        image_bytes_arr = [base64.b64decode(image.encode('utf-8')) for image in image_arr]
 
         dom = parse_html(html_string)
         error_handler = ErrorHandler(dom)
