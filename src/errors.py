@@ -6,6 +6,7 @@ class AccessibilityEditor:
         self._dom = dom
         self._handlers = {
             "alt_missing": self.handle_alt_missing,
+            "heading_empty": self.handle_heading_missing
             # TODO: Add more!
         }
 
