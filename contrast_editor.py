@@ -6,13 +6,14 @@ class ContrastEditor():
     def __init__(self, dom: any):
         self._dom = dom
         self._handlers = {
+            "contrast": self._handle_contrast_error
             # TODO: Find contrast error type
         }
 
     def _handle_contrast_error(self, details: dict):
-        xpaths = details["contrast"]["items"]["contrast"]["xpaths"]
+        xpaths = details["xpaths"]
 
-        contrast_data = details["contrast"]["items"]["contrast"]["contrastdata"]
+        contrast_data = details["contrastdata"]
 
         changes_dict = {}
 
@@ -34,4 +35,4 @@ class ContrastEditor():
         if error_type not in self._handlers:
             raise RuntimeError(f"Handler for contrast error: {error_type} not registered")
         
-        self._handlers[error_type]
+        self._handlers[error_type](details)

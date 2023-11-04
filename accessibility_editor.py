@@ -23,4 +23,4 @@ class AccessibilityEditor:
         if error_type not in self._handlers:
             raise RuntimeError(f"Handler for error: {error_type} not registered")
         
-        self._handlers[error_type]
+        self._handlers[error_type](details)
