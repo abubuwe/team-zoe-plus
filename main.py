@@ -1,3 +1,4 @@
+import os
 import requests
 import os
 
@@ -5,15 +6,13 @@ from tqdm import tqdm
 from html_modifier import parse_html
 from flask import Flask, request
 
-from errors import ErrorHandler
+from accessibility_editor import AccessibilityEditor
 from utils import debug_picklify
 import base64
-
-from dotenv import load_dotenv
+from dotenv import load_dotenvgit 
 
 load_dotenv()
 
-print(os.environ)
 try:
    WAVE_API_KEY = os.environ["WAVE_API_KEY"]
 except KeyError:
@@ -24,6 +23,7 @@ app.debug = True
 
 ACCESSIBILITY_API_URL = "https://alphagov.github.io/accessibility-tool-audit/test-cases.html" 
 HTTP_EMPTY_RESPONSE = 200
+WAVE_API_KEY = os.getenv("WAVE_API_KEY")
 
 @app.route("/", methods=['GET', 'POST'])
 def get_html():
@@ -35,9 +35,9 @@ def get_html():
         image_bytes_arr = [base64.b64decode(image.encode('utf-8')) for image in image_arr]
 
         dom = parse_html(html_string)
-        error_handler = ErrorHandler(dom)
+        accessibility_editor = AccessibilityEditor(dom)
         
-        return process_analysis(query_accessibility_errors(ACCESSIBILITY_API_URL), error_handler)
+        return process_analysis(query_accessibility_errors(ACCESSIBILITY_API_URL), accessibility_editor)
     
     return "", HTTP_EMPTY_RESPONSE
 
@@ -62,7 +62,7 @@ def query_accessibility_errors(website: str):
 
   return response.json()
 
-def process_analysis(results: dict, error_handler: ErrorHandler):
+def process_analysis(results: dict, error_handler: AccessibilityEditor):
    print(f"Visual analysis URL: {results['statistics']['waveurl']}")
    print(f"Total element count: {results['statistics']['totalelements']}")
 
