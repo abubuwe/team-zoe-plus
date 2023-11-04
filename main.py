@@ -32,8 +32,12 @@ def get_html():
         content = request.json
         url = content["url"]
         html_string = content["html_string"]
-        image_arr = content["images"]
-        image_bytes_arr = [base64.b64decode(image.encode('utf-8')) for image in image_arr]
+
+        image_arr = content.get("images", None)
+        image_bytes_arr = []
+
+        if image_arr:
+         image_bytes_arr = [base64.b64decode(image.encode('utf-8')) for image in image_arr]
 
         dom = parse_html(html_string)
         accessibility_editor = AccessibilityEditor(dom)
