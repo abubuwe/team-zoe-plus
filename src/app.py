@@ -13,6 +13,7 @@ def is_html(filename):
 
 @app.route("/", methods=['GET', 'POST'])
 def get_html():
+    print(request, sys.stdout)
     if request.method == 'POST':
         if 'file' not in request.files:
             print('No file found', file=sys.stderr)
