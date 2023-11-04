@@ -6,11 +6,11 @@ class ContrastEditor():
     def __init__(self, dom: any):
         self._dom = dom
         self._handlers = {
-            "contrast": self._handle_contrast_error
+            "contrast": self._handle_contrast_errors
             # TODO: Find contrast error type
         }
 
-    def _handle_contrast_error(self, details: dict):
+    def _increase_contrast(self, details: dict):
         xpaths = details["xpaths"]
 
         contrast_data = details["contrastdata"]
@@ -31,7 +31,7 @@ class ContrastEditor():
 
         return etree.tostring(self._dom).decode(), changes_dict
     
-    def handle_contrast_error(self, error_type: str, details: dict):
+    def handle_contrast_errors(self, error_type: str, details: dict):
         if error_type not in self._handlers:
             raise RuntimeError(f"Handler for contrast error: {error_type} not registered")
         
