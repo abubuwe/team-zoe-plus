@@ -9,7 +9,7 @@ from flask import Flask, request
 from accessibility_editor import AccessibilityEditor
 from utils import debug_picklify
 import base64
-from dotenv import load_dotenvgit 
+from dotenv import load_dotenv
 
 load_dotenv()
 
