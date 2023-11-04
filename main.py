@@ -1,5 +1,6 @@
 import os
 import requests
+import os
 
 from tqdm import tqdm
 from html_modifier import parse_html
@@ -10,6 +11,11 @@ from utils import debug_picklify
 from dotenv import load_dotenv
 
 load_dotenv()
+
+try:
+   WAVE_API_KEY = os.environ["WAVE_API_KEY"]
+except KeyError:
+   raise KeyError("Please set the WAVE_API_KEY environment variable to your Wave API key.")
 
 app = Flask(__name__)
 app.debug = True
