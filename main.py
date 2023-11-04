@@ -6,7 +6,7 @@ from tqdm import tqdm
 from html_modifier import parse_html
 from flask import Flask, request
 
-from errors import AccessibilityEditor
+from accessibility_editor import AccessibilityEditor
 from utils import debug_picklify
 from dotenv import load_dotenv
 
