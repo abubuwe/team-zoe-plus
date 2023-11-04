@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-print(os.environ)
 try:
    WAVE_API_KEY = os.environ["WAVE_API_KEY"]
 except KeyError:
