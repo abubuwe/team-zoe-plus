@@ -1,2 +1,2 @@
 def html_accessibility(html_file):
-    pass
+    return html_file
