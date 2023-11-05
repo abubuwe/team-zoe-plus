@@ -5,7 +5,7 @@ from itertools import chain
 
 from tqdm import tqdm
 from html_modifier import parse_html
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 from accessibility_editor import AccessibilityEditor
 from utils import debug_picklify
@@ -82,12 +82,18 @@ def process_analysis(
       for cls in ["error", "alert", "aria", "contrast", "feature", "structure"]
    ))
 
+   new_html_string = ""
+   changes_dict = {}
    with tqdm(total = len(all_errors)) as pbar:
       for error_type, error in all_errors:
          pbar.set_description(f"Patching {error_type}...")
          
          try:
-            accessibility_editor.fix(error_type, error)
+            tmp_html, tmp_changes = accessibility_editor.fix(error_type, error)
+            new_html_string = tmp_html
+            # Add new changes and overwrite existing ones
+            for key, val in tmp_changes.items():
+               changes_dict[key] = val
          except RuntimeError:
             # TODO: Remove this!
             pass
@@ -95,6 +101,9 @@ def process_analysis(
          pbar.update()
 
    # TODO: Handle alerts!
+   # Put responses into JSON
+   response_json = {"new_html_string": new_html_string, "html_changes": changes_dict}
+   return jsonify(response_json)
 
 if __name__ == "__main__":
    app.run(port=os.environ.get("PORT", 5000))
