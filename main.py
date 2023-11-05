@@ -78,17 +78,16 @@ def process_analysis(
    print(f"Total element count: {results['statistics']['totalelements']}")
 
    all_errors = list(chain.from_iterable(
-      results["categories"][cls]
-      for cls in ["error", "alert", "contrast"]
+      results["categories"][cls]["items"].items()
+      for cls in ["error", "alert", "aria", "contrast", "feature", "structure"]
    ))
 
    with tqdm(total = len(all_errors)) as pbar:
-      print(all_errors)
       for error_type, error in all_errors:
          pbar.set_description(f"Patching {error_type}...")
          
          try:
-            accessibility_editor.handle_accessibility_error(error_type, error)
+            accessibility_editor.fix(error_type, error)
          except RuntimeError:
             # TODO: Remove this!
             pass
