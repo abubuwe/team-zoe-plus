@@ -25,7 +25,12 @@ class TestAccessibilityEditor(unittest.TestCase):
             details_dict = json.load(f)
         
         new_html_string, changes = self.accessibility_editor._increase_contrast(details_dict)
+        with open("new_html_test.html", "w") as f:
+            f.write(new_html_string)
+
         print(changes)
+        with open("html_changes.json", "w") as f:
+            json.dump(changes, f, indent=4, separators=(',', ': '))
 
 if __name__ == '__main__':
     unittest.main()
