@@ -14,3 +14,4 @@ Pillow>=10.1.0
 anthropic>=0.5.0
 transformers>=2.1.0
 torch>=2.1.0
+flask-cors>=4.0.0

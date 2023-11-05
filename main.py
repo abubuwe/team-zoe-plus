@@ -6,6 +6,7 @@ from itertools import chain
 from tqdm import tqdm
 from html_modifier import parse_html
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 from accessibility_editor import AccessibilityEditor
 from utils import debug_picklify
@@ -16,15 +17,16 @@ load_dotenv()
 
 try:
    WAVE_API_KEY = os.environ["WAVE_API_KEY"]
+   print("WAVE_API_KEY is set to", WAVE_API_KEY)
 except KeyError:
    raise KeyError("Please set the WAVE_API_KEY environment variable to your Wave API key.")
 
 app = Flask(__name__)
 app.debug = True
+CORS(app)
 
 ACCESSIBILITY_API_URL = "https://alphagov.github.io/accessibility-tool-audit/test-cases.html" 
 HTTP_EMPTY_RESPONSE = 200
-WAVE_API_KEY = os.getenv("WAVE_API_KEY")
 
 @app.route("/", methods=['GET', 'POST'])
 def get_html():
@@ -42,8 +44,10 @@ def get_html():
         dom = parse_html(html_string)
         accessibility_editor = AccessibilityEditor(dom)
         
+        accessibility_results = query_accessibility_errors(ACCESSIBILITY_API_URL)
+
         return process_analysis(
-           query_accessibility_errors(ACCESSIBILITY_API_URL), 
+           accessibility_results,
            accessibility_editor
          )
     
@@ -53,8 +57,8 @@ def get_html():
 def hello_world():
     return "<p>Hello, World!</p>"
 
-@debug_picklify
 def query_accessibility_errors(website: str):
+  print("Querying WAVE API...")
   response = requests.get(
      "https://wave.webaim.org/api/request",
      params = {
@@ -64,16 +68,18 @@ def query_accessibility_errors(website: str):
         "reporttype": "3"
      }
   )
-
   if response.status_code != 200:
      raise RuntimeError(f"Wave failed with code {response}. Full response: {response}")
 
-  return response.json()
+  resp = response.json()
+
+  return resp
 
 def process_analysis(
       results: dict, 
       accessibility_editor: AccessibilityEditor
    ):
+   print(f"Results input is of type {type(results)}")
    print(f"Visual analysis URL: {results['statistics']['waveurl']}")
    print(f"Total element count: {results['statistics']['totalelements']}")
 
