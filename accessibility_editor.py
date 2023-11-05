@@ -17,8 +17,8 @@ class AccessibilityEditor:
         }
     
     def _increase_contrast(self, details: dict):
-        xpaths = details["xpaths"]
-        contrast_data = details["contrastdata"]
+        xpaths = details["items"]["contrast"]["xpaths"]
+        contrast_data = details["items"]["contrast"]["contrastdata"]
         changes_dict = {}
 
         for xpath, data in zip(xpaths, contrast_data):

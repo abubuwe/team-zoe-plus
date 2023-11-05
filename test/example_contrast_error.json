@@ -1,0 +1,50 @@
+{
+    "description": "Contrast Errors",
+    "count": 5,
+    "items": {
+        "contrast": {
+            "id": "contrast",
+            "description": "Very low contrast",
+            "count": 5,
+            "xpaths": [
+                "/HTML/BODY[1]/MAIN[1]/DIV[10]/P[1]",
+                "/HTML/BODY[1]/MAIN[1]/DIV[11]/P[1]",
+                "/HTML/BODY[1]/MAIN[1]/DIV[12]/P[1]",
+                "/HTML/BODY[1]/MAIN[1]/DIV[13]/P[1]",
+                "/HTML/BODY[1]/MAIN[1]/DIV[103]/FORM[1]/DIV[1]"
+            ],
+            "contrastdata": [
+                [
+                    4.37,
+                    "#757980",
+                    "#ffffff",
+                    false
+                ],
+                [
+                    3.4,
+                    "#878c8c",
+                    "#ffffff",
+                    false
+                ],
+                [
+                    2.86,
+                    "#9499a1",
+                    "#ffffff",
+                    false
+                ],
+                [
+                    3.4,
+                    "#878c8c",
+                    "#ffffff",
+                    false
+                ],
+                [
+                    1.24,
+                    "#ffffff",
+                    "#fae1e1",
+                    false
+                ]
+            ]
+        }
+    }
+}

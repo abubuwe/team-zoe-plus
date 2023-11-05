@@ -10,8 +10,8 @@ def parse_html(html_string):
     tree = etree.ElementTree(tree)
     return tree
 
-# Returns a list of lxml Element objects that match the xpath
-def get_elem_from_path(xpath, html_string):
-    tree = parse_html(html_string)
-    elem = tree.xpath(xpath)
-    return elem
+# Returns the first lxml Element objects that match the xpath
+def get_elem_from_path(xpath, dom):
+    xpath = xpath.replace("/HTML", "//HTML").lower()
+    elem = dom.xpath(xpath)
+    return elem[0]
