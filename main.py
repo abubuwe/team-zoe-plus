@@ -26,29 +26,21 @@ ACCESSIBILITY_API_URL = "https://alphagov.github.io/accessibility-tool-audit/tes
 HTTP_EMPTY_RESPONSE = 200
 WAVE_API_KEY = os.getenv("WAVE_API_KEY")
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/", methods=['POST'])
 def get_html():
-    if request.method == 'POST':
-        content = request.json
-        url = content["url"]
-        html_string = content["html_string"]
-
-        image_arr = content.get("images", None)
-        image_bytes_arr = []
-
-        if image_arr:
-         image_bytes_arr = [base64.b64decode(image.encode('utf-8')) for image in image_arr]
-
-        dom = parse_html(html_string)
-        accessibility_editor = AccessibilityEditor(dom)
-        
-        return process_analysis(
-           query_accessibility_errors(ACCESSIBILITY_API_URL), 
-           accessibility_editor
-         )
+   if request.method != "POST":
+      return "", HTTP_EMPTY_RESPONSE
     
-    return "", HTTP_EMPTY_RESPONSE
+   content = request.json
+   url = content["url"]
+   html_string = content["html_string"]
+   
+   acc_errors = query_accessibility_errors(url)
+   dom = parse_html(html_string)
 
+   accessibility_editor = AccessibilityEditor(dom)
+   return process_analysis(acc_errors, accessibility_editor)
+    
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
@@ -85,16 +77,10 @@ def process_analysis(
    with tqdm(total = len(all_errors)) as pbar:
       for error_type, error in all_errors:
          pbar.set_description(f"Patching {error_type}...")
-         
-         try:
-            accessibility_editor.fix(error_type, error)
-         except RuntimeError:
-            # TODO: Remove this!
-            pass
-         
+         accessibility_editor.fix(error_type, error)
          pbar.update()
 
-   # TODO: Handle alerts!
+   return accessibility_editor.get_page()
 
 if __name__ == "__main__":
    app.run(port=os.environ.get("PORT", 5000))
