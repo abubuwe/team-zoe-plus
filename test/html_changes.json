@@ -1,0 +1,7 @@
+{
+    "/HTML/BODY[1]/MAIN[1]/DIV[10]/P[1]": "<p class=\"low-contrast-small-aa\" style=\"colour: #000000\">This small text does not have enough contrast with it's background</p>\n  ",
+    "/HTML/BODY[1]/MAIN[1]/DIV[11]/P[1]": "<p class=\"low-contrast-large-aa\" style=\"colour: #000000\">This small text does not have enough contrast with it's background</p>\n  ",
+    "/HTML/BODY[1]/MAIN[1]/DIV[12]/P[1]": "<p class=\"low-contrast-small-aaa\" style=\"colour: #000000\">This small text does not have enough contrast with it's background</p>\n  ",
+    "/HTML/BODY[1]/MAIN[1]/DIV[13]/P[1]": "<p class=\"low-contrast-large-aa\" style=\"colour: #000000\">This small text does not have enough contrast with it's background</p>\n  ",
+    "/HTML/BODY[1]/MAIN[1]/DIV[103]/FORM[1]/DIV[1]": "<div class=\"validation-summary\" role=\"alert\" style=\"colour: #051E1E\">\n                You need to fix the errors on this page before continuing.\n            </div>\n"
+}

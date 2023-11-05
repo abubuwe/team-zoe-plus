@@ -2,7 +2,7 @@ from lxml import etree
 from html_modifier import get_elem_from_path
 
 from claude import complete
-from utils import complementary_colour
+from utils import get_complementary
 from prompts import build_heading_prompt
 from captioning import caption_image
 
@@ -17,13 +17,13 @@ class AccessibilityEditor:
         }
     
     def _increase_contrast(self, details: dict):
-        xpaths = details["xpaths"]
-        contrast_data = details["contrastdata"]
+        xpaths = details["items"]["contrast"]["xpaths"]
+        contrast_data = details["items"]["contrast"]["contrastdata"]
         changes_dict = {}
 
         for xpath, data in zip(xpaths, contrast_data):
             # Set the text to be complementary to the background:
-            opp_colour = complementary_colour(data[2])
+            opp_colour = get_complementary(data[2])
 
             elem = get_elem_from_path(xpath, self._dom)
             elem.set("style", f"colour: {opp_colour}")
